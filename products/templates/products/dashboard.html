@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+  <aside class="dashboard-sidebar">
+    <div class="user-profile">
+      <img src="{% static 'images/user-placeholder.png' %}" alt="User Avatar" class="profile-pic" />
+      <h3>{{ user.username }}</h3>
+      <p>{{ user.email }}</p>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="{% url 'products:create_product' %}">Post a Crop</a></li>
+        <li><a href="{% url 'products:product_list' %}">View All Crops</a></li>
+        <li><a href="{% url 'subscriptions:status' %}">Subscription</a></li>
+        <li><a href="{% url 'payments:initiate' %}">Payments</a></li>
+        <!-- Add more links as needed -->
+      </ul>
+    </nav>
+  </aside>
+
+  <section class="dashboard-content">
+    <h2>Your Crop Listings</h2>
+    {% if products %}
+      <div class="product-listings">
+        {% for product in products %}
+          <div class="product-card">
+            <img src="{{ product.image.url }}" alt="{{ product.title }}" />
+            <div class="product-info">
+              <h3>{{ product.title }}</h3>
+              <p>Price: {{ product.price }} TZS</p>
+              <p>Location: {{ product.location }}</p>
+              <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">View Details</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>No products posted yet. <a href="{% url 'products:create_product' %}">Post one now!</a></p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+:root {
+    --green-primary: #395B37;  /* Dark green */
+    --green-secondary: #4F8A48;
+    --bg-color: #E5F2E5;       /* Light background */
+    --text-color: #fff;
+    --dark-text: #333;
+  }
+  
+  /* Global Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: var(--bg-color);
+    font-family: 'Arial', sans-serif;
+    color: var(--dark-text);
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--green-primary);
+    padding: 1rem 2rem;
+  }
+  .logo-text {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+  }
+  .nav ul li a {
+    color: var(--text-color);
+    text-decoration: none;
+  }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 1rem;
+    background: var(--green-primary);
+    color: var(--text-color);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  /* Landing Page */
+  .landing-container {
+    max-width: 1200px;
+    margin: 5rem auto;
+    text-align: center;
+  }
+  .landing-heading {
+    font-size: 2.5rem;
+    color: var(--green-primary);
+    margin-bottom: 1rem;
+  }
+  .landing-subheading {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  .feature-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .feature-icon {
+    width: 60px;
+    margin-bottom: 0.5rem;
+  }
+  .join-section {
+    margin-top: 2rem;
+  }
+  .btn-primary {
+    background: var(--green-secondary);
+    color: #fff;
+    padding: 0.8rem 1.2rem;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  /* Auth Forms */
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0;
+  }
+  .auth-card {
+    background: #fff;
+    padding: 2rem;
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .btn-primary {
+    cursor: pointer;
+    border: none;
+  }
+  .switch-link {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Dashboard */
+  .dashboard-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 2rem auto;
+    gap: 2rem;
+  }
+  .dashboard-sidebar {
+    width: 250px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .user-profile {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .profile-pic {
+    width: 80px;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+  }
+  .sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  .sidebar-nav ul li {
+    margin-bottom: 1rem;
+  }
+  .sidebar-nav ul li a {
+    text-decoration: none;
+    color: var(--green-primary);
+  }
+  .dashboard-content {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .product-listings {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  .product-card {
+    background: #fafafa;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .product-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  .product-info {
+    padding: 0.8rem;
+  }
+  .btn-secondary {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #fff;
+    background: var(--green-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  
+  /* Product Detail */
+  .detail-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    display: flex;
+    gap: 2rem;
+  }
+  .detail-image img {
+    width: 400px;
+    border-radius: 8px;
+  }
+  .detail-info {
+    flex: 1;
+  }
+  

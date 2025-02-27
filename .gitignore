@@ -1,0 +1,7 @@
+mkulima/
+*.pyc
+__pycache__/
+db.sqlite3
+.env
+media/
+static/images/  # Add this line to ignore the images directory

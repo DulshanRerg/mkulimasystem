@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+  <div class="detail-image">
+    <img src="{{ product.image.url }}" alt="{{ product.title }}" />
+  </div>
+  <div class="detail-info">
+    <h2>{{ product.title }}</h2>
+    <p>Price: <strong>{{ product.price }} TZS</strong></p>
+    <p>Location: <strong>{{ product.location }}</strong></p>
+    <p>{{ product.description }}</p>
+  </div>
+</div>
+
+<!-- Example: listing reviews or related products can go here -->
+
+{% endblock %}

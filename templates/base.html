@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Mkulima App{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <a href="{% url 'landing' %}" class="logo-text">Mkulima App</a>
+    </div>
+    <nav class="nav">
+      <ul>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'products:dashboard' %}">Dashboard</a></li>
+          <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+        {% else %}
+          <li><a href="{% url 'accounts:login' %}">Login</a></li>
+          <li><a href="{% url 'accounts:signup' %}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Mkulima App - All Rights Reserved</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
