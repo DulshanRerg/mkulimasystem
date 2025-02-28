@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Chat Rooms{% endblock %}
+
+{% block content %}
+<div class="chat-room-list">
+  <h1>My Chat Rooms</h1>
+  {% if chat_rooms %}
+    <ul>
+      {% for room in chat_rooms %}
+        <li>
+          <a href="{% url 'chat:chat_room' room.name %}">{{ room.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven't joined any chat rooms yet.</p>
+  {% endif %}
+  <a href="{% url 'chat:create_chat_room' %}" class="btn-primary">Create New Chat Room</a>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Subscription Status{% endblock %}
+
+{% block content %}
+<div class="subscription-status">
+  <h1>Your Subscription</h1>
+  {% if subscription %}
+    <p><strong>Plan:</strong> {{ subscription.plan_name }}</p>
+    <p><strong>Expires on:</strong> {{ subscription.expiry_date|date:"F j, Y" }}</p>
+    {% if subscription.is_active %}
+      <p class="active-status">Your subscription is active.</p>
+    {% else %}
+      <p class="expired-status">Your subscription has expired.</p>
+    {% endif %}
+  {% else %}
+    <p>You are not subscribed. <a href="{% url 'subscriptions:subscribe' %}">Subscribe now</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}

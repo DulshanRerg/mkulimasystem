@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Success{% endblock %}
+
+{% block content %}
+<div class="notification success">
+  <h1>Payment Successful!</h1>
+  <p>Your payment has been processed successfully.</p>
+  <a href="{% url 'products:dashboard' %}" class="btn-primary">Return to Dashboard</a>
+</div>
+{% endblock %}

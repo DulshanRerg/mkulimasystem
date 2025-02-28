@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
 from django.views import generic
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
+from django.shortcuts import redirect
 from .forms import CustomUserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
@@ -24,3 +25,10 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     Displays the user profile.
     """
     template_name = 'accounts/profile.html'
+
+def custom_logout_view(request):
+    """
+    Custom logout view that allows GET requests.
+    """
+    logout(request)
+    return redirect(reverse_lazy('accounts:login'))

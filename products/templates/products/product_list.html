@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crop Listings{% endblock %}
+
+{% block content %}
+<div class="product-list">
+  <h2>All Crop Listings</h2>
+  {% if products %}
+    <div class="product-grid">
+      {% for product in products %}
+        <div class="product-card">
+          <img src="{{ product.image.url }}" alt="{{ product.title }}">
+          <div class="product-info">
+            <h3>{{ product.title }}</h3>
+            <p>Price: {{ product.price }} TZS</p>
+            <p>Location: {{ product.location }}</p>
+            <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">View Details</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No crop listings found.</p>
+  {% endif %}
+</div>
+{% endblock %}

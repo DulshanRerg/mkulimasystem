@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -64,7 +64,8 @@ ROOT_URLCONF = 'MkulimaSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Ensure this line is present
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
+        'DIRS': [BASE_DIR / 'templates'], # Ensure this line is present
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -246,4 +247,6 @@ SENTRY_TRACES_COLLECT_SESSIONS = False
 # from sentry_sdk.integrations.argv import ArgvIntegration
 # from sentry_sdk.integrations.site import SiteIntegration
 # from sentry_sdk.integrations.modules import ModulesIntegration
+
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(',')
 

@@ -5,7 +5,7 @@ class ChatRoom(models.Model):
     """
     Represents a chat room.
     """
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='chatrooms')
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='ChatRoom',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
+                ('name', models.CharField(max_length=255, unique=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('participants', models.ManyToManyField(related_name='chatrooms', to=settings.AUTH_USER_MODEL)),
             ],

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chat Room{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+  <h1>Chat Room: {{ room_name }}</h1>
+  <div id="chat-log" class="chat-log">
+    <!-- Messages will be appended here via WebSockets -->
+  </div>
+  <form id="chat-form">
+    {% csrf_token %}
+    <input type="text" id="chat-message-input" autocomplete="off" placeholder="Type your message here..." />
+    <button type="submit" id="chat-message-submit" class="btn-primary">Send</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Example JavaScript to connect to a WebSocket and handle chat messages.
+  const roomName = "{{ room_name }}";
+  const chatSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+  );
+
+  chatSocket.onmessage = function(e) {
+      const data = JSON.parse(e.data);
+      const chatLog = document.getElementById('chat-log');
+      const messageElement = document.createElement('div');
+      messageElement.textContent = data.sender + ': ' + data.message;
+      chatLog.appendChild(messageElement);
+  };
+
+  document.getElementById('chat-form').onsubmit = function(e) {
+      e.preventDefault();
+      const messageInputDom = document.getElementById('chat-message-input');
+      const message = messageInputDom.value;
+      chatSocket.send(JSON.stringify({
+          'message': message,
+          'sender': "{{ user.username }}"
+      }));
+      messageInputDom.value = '';
+  };
+</script>
+{% endblock %}
