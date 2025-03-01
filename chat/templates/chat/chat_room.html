@@ -1,25 +1,50 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Chat Room{% endblock %}
+{% block title %}Chat Room: {{ room_name }}{% endblock %}
 
 {% block content %}
-<div class="chat-container">
-  <h1>Chat Room: {{ room_name }}</h1>
-  <div id="chat-log" class="chat-log">
-    <!-- Messages will be appended here via WebSockets -->
+<div class="chat-room-container">
+  <!-- Participants Section -->
+  <div class="chat-participants">
+    <h3>Participants</h3>
+    <ul>
+      {% for participant in chat_room.participants.all %}
+        <li class="participant">
+          <img src="{% if participant.profile.image %}{{ participant.profile.image.url }}{% else %}{% static 'images/user-placeholder.png' %}{% endif %}" 
+               alt="{{ participant.username }}" 
+               class="participant-avatar">
+          <span>{{ participant.username }}</span>
+        </li>
+      {% endfor %}
+    </ul>
   </div>
-  <form id="chat-form">
-    {% csrf_token %}
-    <input type="text" id="chat-message-input" autocomplete="off" placeholder="Type your message here..." />
-    <button type="submit" id="chat-message-submit" class="btn-primary">Send</button>
-  </form>
+
+  <!-- Chat Log and Message Form -->
+  <div class="chat-log-container">
+    <h1>Chat Room: {{ room_name }}</h1>
+    <div id="chat-log" class="chat-log">
+      {% for message in chat_room.messages.all %}
+        <div class="chat-message">
+          <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+          {% if request.user == message.sender or request.user == chat_room.created_by or request.user.is_superuser %}
+            <a href="{% url 'chat:delete_message' message.id %}" class="btn-delete">Delete</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    <form id="chat-form">
+      {% csrf_token %}
+      <input type="text" id="chat-message-input" autocomplete="off" placeholder="Type your message here..." />
+      <button type="submit" id="chat-message-submit" class="btn-primary">Send</button>
+    </form>
+  </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-  // Example JavaScript to connect to a WebSocket and handle chat messages.
+  // Establish a WebSocket connection to the chat room.
   const roomName = "{{ room_name }}";
   const chatSocket = new WebSocket(
     'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
@@ -29,19 +54,20 @@
       const data = JSON.parse(e.data);
       const chatLog = document.getElementById('chat-log');
       const messageElement = document.createElement('div');
-      messageElement.textContent = data.sender + ': ' + data.message;
+      messageElement.className = 'chat-message';
+      messageElement.innerHTML = '<strong>' + data.sender + ':</strong> ' + data.message;
       chatLog.appendChild(messageElement);
   };
 
   document.getElementById('chat-form').onsubmit = function(e) {
       e.preventDefault();
-      const messageInputDom = document.getElementById('chat-message-input');
-      const message = messageInputDom.value;
+      const messageInput = document.getElementById('chat-message-input');
+      const message = messageInput.value;
       chatSocket.send(JSON.stringify({
           'message': message,
           'sender': "{{ user.username }}"
       }));
-      messageInputDom.value = '';
+      messageInput.value = '';
   };
 </script>
 {% endblock %}

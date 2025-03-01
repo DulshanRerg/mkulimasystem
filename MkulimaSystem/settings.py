@@ -169,7 +169,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [REDIS_URL],
+            'hosts': [('127.0.0.1', 6379)],  # Replace with your Redis server
         },
     },
 }
@@ -248,5 +248,4 @@ SENTRY_TRACES_COLLECT_SESSIONS = False
 # from sentry_sdk.integrations.site import SiteIntegration
 # from sentry_sdk.integrations.modules import ModulesIntegration
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(',')
-
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(',') + ['https://b425-41-93-85-233.ngrok-free.app']

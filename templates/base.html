@@ -29,9 +29,14 @@
     {% block content %}{% endblock %}
   </main>
 
+  <!-- Hide the footer only on chat pages -->
+  {% if "/chat/" not in request.path %}
   <footer class="footer">
-    <p>&copy; 2025 Mkulima App - All Rights Reserved</p>
+      <div class="container">
+          <p>&copy; 2025 Mkulima App - All Rights Reserved</p>
+      </div>
   </footer>
+  {% endif %}
 
   {% block scripts %}{% endblock %}
 </body>

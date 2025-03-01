@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -36,3 +37,12 @@ class User(AbstractUser):
     def is_admin(self):
         """Return True if the user is an admin."""
         return self.role == self.ADMIN
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+
+    def get_avatar_url(self):
+        if self.image:
+            return self.image.url
+        return "/static/images/user-placeholder.png"

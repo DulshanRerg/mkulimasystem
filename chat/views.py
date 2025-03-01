@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import ChatRoom
 from django.db import IntegrityError
+from django.http import HttpResponseForbidden
+from .models import Message
+
 
 @login_required
 def create_chat_room(request):
@@ -26,17 +29,67 @@ def create_chat_room(request):
                 return redirect('chat:chat_room', room_name=room_name)
     return render(request, 'chat/create_chat_room.html')
 
-def chat_room(request, room_name):
+# def chat_room(request, room_name):
+#     """
+#     Renders the chat room interface.
+#     """
+#     chat_room = get_object_or_404(ChatRoom, name=room_name)
+#     return render(request, 'chat/chat_room.html', {'room_name': room_name, 'chat_room': chat_room})
+
+# @login_required
+# def chat_room_list(request):
+#     """
+#     List all chat rooms where the user is a participant.
+#     """
+#     chat_rooms = ChatRoom.objects.filter(participants=request.user)
+#     return render(request, 'chat/chat_room_list.html', {'chat_rooms': chat_rooms})
+
+
+@login_required
+def delete_message(request, message_id):
     """
-    Renders the chat room interface.
+    Allows the sender, the chat room creator, or an admin to delete a message.
+    GET: Show a confirmation page.
+    POST: Delete the message and redirect to the chat room.
     """
-    chat_room = get_object_or_404(ChatRoom, name=room_name)
-    return render(request, 'chat/chat_room.html', {'room_name': room_name, 'chat_room': chat_room})
+    message = get_object_or_404(Message, id=message_id)
+    chat_room = message.chat_room
+    # Only allow deletion if the user is the sender, the chat room creator, or a superuser.
+    if request.user != message.sender and request.user != chat_room.created_by and not request.user.is_superuser:
+        return HttpResponseForbidden("You are not allowed to delete this message.")
+
+    if request.method == "POST":
+        room_name = chat_room.name
+        message.delete()
+        return redirect('chat:chat_room', room_name=room_name)
+    
+    return render(request, 'chat/confirm_delete_message.html', {'message': message})
+
 
 @login_required
 def chat_room_list(request):
     """
-    List all chat rooms where the user is a participant.
+    Lists all chat rooms the user is a participant of.
     """
-    chat_rooms = ChatRoom.objects.filter(participants=request.user)
-    return render(request, 'chat/chat_room_list.html', {'chat_rooms': chat_rooms})
+    chat_list = ChatRoom.objects.filter(participants=request.user)
+    # Choose the first chat as the active chat for demonstration purposes,
+    # or handle it via query parameters.
+    active_chat = chat_list.first() if chat_list.exists() else None
+    context = {
+        'chat_list': chat_list,
+        'active_chat': active_chat,
+    }
+    return render(request, 'chat/whatsapp_chat.html', context)
+
+@login_required
+def chat_room(request, room_name):
+    """
+    Displays a specific chat room and its messages.
+    """
+    active_chat = get_object_or_404(ChatRoom, name=room_name)
+    chat_list = ChatRoom.objects.filter(participants=request.user)
+    context = {
+        'active_chat': active_chat,
+        'chat_list': chat_list,
+    }
+    return render(request, 'chat/whatsapp_chat.html', context)

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chats{% endblock %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/whatsapp_style.css' %}" />
+<div class="main-content"> 
+<div class="whatsapp-container">
+  <!-- Left Sidebar: Chat List -->
+  <aside class="whatsapp-sidebar">
+    <div class="sidebar-header">
+      <h2>Chats</h2>
+      <a href="{% url 'chat:create_chat_room' %}" class="btn new-chat">New Chat</a>
+    </div>
+    <ul class="chat-list">
+      {% for chat in chat_list %}
+      <li class="chat-item">
+        {% load static %}
+        {% static "images/user-placeholder.png" as user_placeholder %}
+        <img src="{{ chat.get_avatar_url|default_if_none:user_placeholder }}" alt="{{ chat.name }}" class="avatar">
+        <div class="chat-info">
+          <h3 class="chat-name">{{ chat.name }}</h3>
+          <p class="chat-snippet">{{ chat.last_message|default:"No messages yet" }}</p>
+        </div>
+        <a href="{% url 'chat:chat_room' chat.name %}" class="chat-link"></a>
+      </li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <!-- Right Conversation Area -->
+  <section class="whatsapp-chat-area">
+    <header class="chat-header">
+      {% if active_chat.is_group %}
+          <img src="{{ active_chat.get_avatar_url }}" alt="{{ active_chat.name }}" class="chat-header-avatar">
+      {% else %}
+          {% for participant in active_chat.participants.all %}
+              {% if participant != user %}
+                  <img src="{{ participant.profile.get_avatar_url }}" alt="{{ participant.username }}" class="chat-header-avatar">
+              {% endif %}
+          {% endfor %}
+      {% endif %}
+  
+      <div class="chat-header-info">
+          <h3>{{ active_chat.name }}</h3>
+          {% if active_chat.is_group %}
+              <p>{{ active_chat.participants.count }} participants</p>
+          {% else %}
+              <p>Direct Chat</p>
+          {% endif %}
+      </div>
+  </header>  
+
+    <div id="chat-log" class="chat-log">
+      {% for message in active_chat.messages.all %}
+      <div class="chat-message {% if message.sender == user %}sent{% else %}received{% endif %}">
+        <p class="message-text">{{ message.content }}</p>
+        <span class="timestamp">{{ message.timestamp|date:"H:i" }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <form id="chat-form" class="chat-input-form">
+      {% csrf_token %}
+      <input type="text" id="chat-message-input" placeholder="Type a message..." autocomplete="off">
+      <button type="submit" class="btn send-btn">Send</button>
+    </form>
+  </section>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 5;
+
+  function connectWebSocket() {
+    if (reconnectAttempts >= maxReconnectAttempts) {
+      console.error("Max WebSocket reconnect attempts reached.");
+      return;
+    }
+    
+    const chatSocket = new WebSocket(
+      'ws://' + window.location.host + '/ws/chat/' + encodeURIComponent("{{ active_chat.name }}") + '/'
+    );
+
+    chatSocket.onopen = function() {
+      console.log("WebSocket connection established.");
+    };
+
+    chatSocket.onmessage = function(e) {
+      try {
+        const data = JSON.parse(e.data);
+        if (!data.message) {
+          console.error("Received invalid message data:", data);
+          return;
+        }
+
+        const chatLog = document.getElementById('chat-log');
+        if (!chatLog) {
+          console.error("Chat log element not found.");
+          return;
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message ' + (data.sender === "{{ user.username }}" ? 'chat-message-sent' : 'chat-message-received');
+        messageDiv.innerHTML = `
+          <p class="chat-message-text">${data.message}</p>
+          <span class="chat-message-time">${data.timestamp}</span>
+      ` ;
+
+        chatLog.appendChild(messageDiv);
+        chatLog.scrollTop = chatLog.scrollHeight;
+      } catch (error) {
+        console.error("Error processing WebSocket message:", error);
+      }
+    };
+
+    chatSocket.onerror = function(error) {
+      console.error("WebSocket error:", error);
+    };
+
+    chatSocket.onclose = function(e) {
+      console.warn("WebSocket closed. Reconnecting in 5 seconds...", e);
+      setTimeout(function() {
+        location.reload();
+      }, 5000);
+    };
+
+    document.getElementById('chat-form').onsubmit = function(e) {
+      e.preventDefault();
+      const inputDom = document.getElementById('chat-message-input');
+      if (!inputDom || inputDom.value.trim() === "") return;
+
+      chatSocket.send(JSON.stringify({
+          'message': inputDom.value,
+          'sender': "{{ user.username }}"
+      }));
+
+      inputDom.value = '';
+    };
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock %}
