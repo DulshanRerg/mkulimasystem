@@ -16,6 +16,9 @@
             <p>Price: {{ product.price }} TZS</p>
             <p>Location: {{ product.location }}</p>
             <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">View Details</a>
+            {% if user.is_farmer %}
+              <a href="{% url 'products:delete_product' product.pk %}" class="btn-danger">Delete</a>
+            {% endif %}
           </div>
         </div>
       {% endfor %}

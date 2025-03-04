@@ -177,7 +177,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
   .product-card img {
-    width: 100%;
+    width: 40%;
     height: 150px;
     object-fit: cover;
   }
@@ -188,10 +188,13 @@
     display: inline-block;
     margin-top: 0.5rem;
     color: #fff;
-    background: var(--green-primary);
+    background: var(--green-secondary);
     padding: 0.5rem 1rem;
     border-radius: 4px;
     text-decoration: none;
+  }
+  .btn-secondary:hover {
+    background: var(--green-primary);
   }
   
   /* Product Detail */
@@ -208,4 +211,23 @@
   .detail-info {
     flex: 1;
   }
-  
+
+  #username-valid {
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  .btn-danger {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #fff;
+    background-color: #dc3545;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}

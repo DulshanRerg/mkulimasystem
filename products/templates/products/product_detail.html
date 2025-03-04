@@ -7,13 +7,32 @@
 <div class="detail-container">
   <div class="detail-image">
     <img src="{{ product.image.url }}" alt="{{ product.title }}" />
-  </div>
+    </div>
   <div class="detail-info">
     <h2>{{ product.title }}</h2>
     <p>Price: <strong>{{ product.price }} TZS</strong></p>
     <p>Location: <strong>{{ product.location }}</strong></p>
-    <p>{{ product.description }}</p>
-  </div>
+        <p>{{ product.description }}</p>
+    <p>Available Quantity: <strong>{{ product.quantity }}</strong></p>
+    <p>Category: <strong>{{ product.category }}</strong></p>
+    <p>Posted by: <strong>{{ product.farmer }}</strong></p>
+    <p>Posted on: <strong>{{ product.created_at }}</strong></p>
+    <p>Updated on: <strong>{{ product.updated_at }}</strong></p>
+    <p>Product ID: <strong>{{ product.pk }}</strong></p>
+    <p>Product SKU: <strong>{{ product.sku }}</strong></p>
+    <p>Product Status: <strong>{{ product.status }}</strong></p>
+    <p>Product Rating: <strong>{{ product.rating }}</strong></p>
+    <p>Product Reviews: <strong>{{ product.reviews }}</strong></p>
+    <p>Product Views: <strong>{{ product.views }}</strong></p>
+    {% if user.is_buyer %}
+        <a href="{% url 'payments:initiate' %}" class="btn-secondary" >Buy Now</a>
+    {% endif %}
+    {% if user.is_farmer %}
+        <a href="{% url 'products:update_product' product.pk %}" class="btn-secondary">Edit Product</a>
+        <a href="{% url 'products:delete_product' product.pk %}" class="btn-danger">Delete Product</a>
+    {% endif %}
+    <a href="{% url 'products:product_list' %}" class="btn-secondary">Back to All Products</a>
+    </div>
 </div>
 
 <!-- Example: listing reviews or related products can go here -->

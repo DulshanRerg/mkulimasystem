@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <title>{% block title %}Mkulima App{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
   <header class="header">
@@ -15,7 +17,6 @@
       <ul>
         {% if user.is_authenticated %}
           <li><a href="{% url 'products:dashboard' %}">Dashboard</a></li>
-          <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
           <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
         {% else %}
           <li><a href="{% url 'accounts:login' %}">Login</a></li>

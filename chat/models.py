@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from accounts.models import User
+from products.models import Product
 
 class ChatRoom(models.Model):
     """
@@ -30,6 +32,11 @@ class ChatRoom(models.Model):
 
     def __str__(self):
         return self.name
+    
+class GroupJoinRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted')], default='pending')
 
 class Message(models.Model):
     """
@@ -39,6 +46,7 @@ class Message(models.Model):
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'{self.sender.username}: {self.content[:20]}'

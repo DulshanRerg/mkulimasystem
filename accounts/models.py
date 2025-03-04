@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 
 # Create your models here.
@@ -24,7 +25,17 @@ class User(AbstractUser):
         (ADMIN, 'Admin'),
     ]
 
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        validators=[RegexValidator(
+            regex='^[a-zA-Z0-9]*$',
+            message='Username must be alphanumeric.',
+            code='invalid_username'
+        )]
+    )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=BUYER)
+    email = models.EmailField(unique=True, blank=True, null=True)
 
     def is_farmer(self):
         """Return True if the user is a farmer."""
