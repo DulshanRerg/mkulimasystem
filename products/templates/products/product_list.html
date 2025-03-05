@@ -43,17 +43,34 @@
                     <h3>{{ product.name }}</h3>
                     <p><strong>Price:</strong> {{ product.price }}</p>
                     <p><strong>Location:</strong> {{ product.location }}</p>
-                    <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">👀 View Details</a>
-                    {% if user.is_farmer %}
-                      <a href="{% url 'products:delete_product' product.pk %}" class="btn-danger">Delete</a>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-      </div>
-      {% else %}
-          <p>No products found matching your search.</p>
-      {% endif %}
+                    <!-- ✅ Show Average Rating with Filled Stars -->
+                    <p><strong>Rating:</strong> 
+                      {% if product.average_rating %}
+                          <span class="stars">
+                              {% for i in "12345" %}
+                                  {% if forloop.counter <= product.average_rating %}
+                                      ★
+                                  {% else %}
+                                      ☆
+                                  {% endif %}
+                              {% endfor %}
+                          </span>
+                          ({{ product.average_rating|floatformat:1 }}/5)
+                      {% else %}
+                          No Ratings Yet
+                      {% endif %}
+                  </p>
+                  <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">👀 View Details</a>
+                  {% if user.is_farmer %}
+                    <a href="{% url 'products:delete_product' product.pk %}" class="btn-danger">Delete</a>
+                  {% endif %}
+              </div>
+          </div>
+      {% endfor %}
     </div>
+    {% else %}
+        <p>No products found matching your search.</p>
+    {% endif %}
   </div>
+</div>
 {% endblock %}

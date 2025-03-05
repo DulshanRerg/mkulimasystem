@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from accounts.decorators import role_required
-from django.db.models import Q
-from .models import Product
-from .forms import ProductForm
+from django.db.models import Q, Avg
+from .models import Product, Review
+from .forms import ProductForm, ReviewForm
 
 def product_list(request):
     """
@@ -15,7 +15,7 @@ def product_list(request):
     location = request.GET.get('location', '')
     category = request.GET.get('category', '')
     sort_by = request.GET.get('sort_by', '')
-    products = Product.objects.all()
+    products = Product.objects.all().annotate(average_rating=Avg('reviews__rating'))
     # Search by crop name
     if query:
         products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
@@ -48,7 +48,30 @@ def product_detail(request, pk):
     Shows details for a single product.
     """
     product = get_object_or_404(Product, pk=pk)
-    return render(request, 'products/product_detail.html', {'product': product, 'user': request.user})
+    reviews = product.reviews.all()
+    average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+    # Check if buyer has already rated the farmer
+    user_review = Review.objects.filter(user=request.user, product=product).first()
+    
+    # Handle review form submission
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            return redirect('products:product_detail', pk=pk)
+    else:
+        form = ReviewForm()
+    return render(request, 'products/product_detail.html', {
+        # Pass to template
+        'product': product,
+        'reviews': reviews,
+        'average_rating': round(average_rating, 1),
+        'form': form,
+        'user_review': user_review,
+    })
 
 @login_required
 @role_required(allowed_roles=['farmer'])

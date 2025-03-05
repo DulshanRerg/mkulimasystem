@@ -285,6 +285,51 @@ transition: 0.3s;
 .search-container button:hover {
 background-color: #218838;
 }
+/* ✅ Review Section Styling */
+.review-card {
+  background: #f8f9fa;
+  border-left: 5px solid #28a745;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.review-card p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.review-card small {
+  color: #6c757d;
+}
+
+/* ✅ Style for Review Form */
+form {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+form button:hover {
+  background-color: #218838;
+}
+/* ✅ Star Rating Display */
+.stars {
+  font-size: 18px;
+  color: gold;
+}
+
 
 /* ✅ Mobile-friendly adjustments */
 @media screen and (max-width: 768px){
