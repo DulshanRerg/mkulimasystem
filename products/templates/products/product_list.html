@@ -1,30 +1,59 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Crop Listings{% endblock %}
+{% block title %}Find Crops{% endblock %}
 
 {% block content %}
-<div class="product-list">
-  <h2>All Crop Listings</h2>
-  {% if products %}
-    <div class="product-grid">
-      {% for product in products %}
-        <div class="product-card">
-          <img src="{{ product.image.url }}" alt="{{ product.title }}">
-          <div class="product-info">
-            <h3>{{ product.title }}</h3>
-            <p>Price: {{ product.price }} TZS</p>
-            <p>Location: {{ product.location }}</p>
-            <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">View Details</a>
-            {% if user.is_farmer %}
-              <a href="{% url 'products:delete_product' product.pk %}" class="btn-danger">Delete</a>
-            {% endif %}
-          </div>
-        </div>
-      {% endfor %}
+  <div class="product-list">
+     <h2>Find Crops</h2>
+    <!-- ✅ Search & Filters Form -->
+    <form method="GET" class="search-container">
+      <input type="text" name="q" value="{{ query }}" placeholder="Crop Name...">
+      
+      <input type="number" name="min_price" placeholder="Min Price">
+      <input type="number" name="max_price" placeholder="Max Price">
+
+      <input type="text" name="location" placeholder="Targeted Region">
+      
+      <select name="category">
+          <option value=""> 🌱 All Categories</option>
+          <option value="Maize">For Food</option>
+          <option value="Rice">For Business</option>
+          <option value="Vegetables">Vegetables</option>
+      </select>
+
+      <select name="sort_by">
+          <option value="">🔽Sort By</option>
+          <option value="newest">Newest</option>
+          <option value="lowest_price">Lowest Price</option>
+          <option value="highest_price">Highest Price</option>
+      </select>
+
+      <button type="submit"> 🔍 Search</button>
+  </form>
+
+    <!-- ✅ Display Filtered Products -->
+    <div class="product-list">
+      {% if products %}
+      <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p><strong>Price:</strong> {{ product.price }}</p>
+                    <p><strong>Location:</strong> {{ product.location }}</p>
+                    <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">👀 View Details</a>
+                    {% if user.is_farmer %}
+                      <a href="{% url 'products:delete_product' product.pk %}" class="btn-danger">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+      </div>
+      {% else %}
+          <p>No products found matching your search.</p>
+      {% endif %}
     </div>
-  {% else %}
-    <p>No crop listings found.</p>
-  {% endif %}
-</div>
+  </div>
 {% endblock %}
