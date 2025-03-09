@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>My Profile</h2>
+        
+        <!-- ✅ Display Profile Picture -->
+        <div class="profile-pic-container mb-3">
+            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="profile-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+        <a href="{% url 'products:dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+    </div>
+{% endblock %}

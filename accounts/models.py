@@ -34,9 +34,26 @@ class User(AbstractUser):
             code='invalid_username'
         )]
     )
+    first_name = models.CharField(max_length=30, blank=False)
+    middle_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=False)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=BUYER)
     email = models.EmailField(unique=True, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', default='default-pics.png')
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    # Farmer-specific fields
+    farm_size = models.CharField(max_length=50, blank=True, null=True)
+    crops_grown = models.TextField(blank=True, null=True)
+    # Buyer-specific fields
+    favorite_crops = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return self.username
+    
     def is_farmer(self):
         """Return True if the user is a farmer."""
         return self.role == self.FARMER
@@ -51,9 +68,9 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
-    image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     def get_avatar_url(self):
         if self.image:
             return self.image.url
-        return "/static/images/user-placeholder.png"
+        return "/static/media/profile_pics/default-pics.png"

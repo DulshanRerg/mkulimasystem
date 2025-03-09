@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import ChatRoom
+from .models import ChatRoom, Product, Message
 from django.db import IntegrityError
 from django.http import HttpResponseForbidden
-from .models import Message
+from products.models import Product
 
 
 @login_required
@@ -87,9 +87,46 @@ def chat_room(request, room_name):
     Displays a specific chat room and its messages.
     """
     active_chat = get_object_or_404(ChatRoom, name=room_name)
+    product = active_chat.product
     chat_list = ChatRoom.objects.filter(participants=request.user)
     context = {
         'active_chat': active_chat,
         'chat_list': chat_list,
+        'product': product,
     }
     return render(request, 'chat/whatsapp_chat.html', context)
+
+@login_required
+def start_p2p_chat(request, pk):
+    """
+    Starts a chat between a buyer and a farmer for a specific product.
+    """
+    product = get_object_or_404(Product, pk=pk)
+    farmer = product.farmer  #  Get the farmer who owns the product
+    buyer = request.user  #  Get the logged-in buyer
+
+    #  Check if a chat already exists for this product
+    chat = ChatRoom.objects.filter(
+        participants=buyer
+    ).filter(participants=farmer, is_group=False).first()
+
+    if not chat:
+        chat = ChatRoom.objects.create(
+            name=f"Chat about {product.name}",
+            is_group=False,
+            product=product  #  Associate the chat with the product
+        )
+        chat.participants.add(buyer, farmer)
+
+    return redirect('chat:chat_room', room_name=chat.name)
+
+# @login_required
+# def whatsapp_chat(request, room_name):
+#     chat_room = get_object_or_404(ChatRoom, name=room_name)
+#     product = chat_room.product  # Assuming the ChatRoom model has a ForeignKey to Product
+#     chat_list = ChatRoom.objects.filter(participants=request.user)
+#     return render(request, 'chat/whatsapp_chat.html', {
+#         'active_chat': chat_room,
+#         'chat_list': chat_list,
+#         'product': product,
+#     })

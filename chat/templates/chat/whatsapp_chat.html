@@ -3,7 +3,6 @@
 
 {% block title %}Chats{% endblock %}
 
-
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/whatsapp_style.css' %}" />
 <div class="main-content"> 
@@ -12,7 +11,11 @@
   <aside class="whatsapp-sidebar">
     <div class="sidebar-header">
       <h2>Chats</h2>
-      <a href="{% url 'products:dashboard' %}" class="btn-secondary">Back to Dashboard</a>
+      {% if product.pk %}
+      <a href="{% url 'products:product_detail' product.pk %}" class="back-btn">🔙 Back to Product</a>
+      {% endif %}
+      {% comment %} <a href="{% url 'products:dashboard' %}" class="btn-secondary">Back to Dashboard</a> {% endcomment %}
+      {% comment %} <a href="{% url 'chat:create_chat_room' %}" class="btn new-chat">New Chat</a> {% endcomment %}
     </div>
     <ul class="chat-list">
       {% for chat in chat_list %}

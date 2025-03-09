@@ -148,7 +148,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Redirect to profile after login
-LOGIN_REDIRECT_URL = 'accounts:profile'
+LOGIN_REDIRECT_URL = 'products:dashboard'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -248,4 +248,4 @@ SENTRY_TRACES_COLLECT_SESSIONS = False
 # from sentry_sdk.integrations.site import SiteIntegration
 # from sentry_sdk.integrations.modules import ModulesIntegration
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(',') + ['https://b425-41-93-85-233.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(',') + ['https://46c9-197-250-199-251.ngrok-free.app']

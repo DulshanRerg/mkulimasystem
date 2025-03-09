@@ -164,6 +164,23 @@
   border-radius: 20px;
   cursor: pointer;
 }
+/* ✅ Style for "Back to Product" Button */
+.back-btn {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: white;
+  color: #075e54;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+  margin-bottom: 15px;
+}
+
+.back-btn:hover {
+  background-color: #0056b3;
+}
+
 
 /* ✅ Mobile-friendly adjustments */
 @media screen and (max-width: 768px){

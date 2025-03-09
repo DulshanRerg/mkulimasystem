@@ -5,16 +5,30 @@
 
 {% block content %}
 <div class="profile-container">
-  <h2>Your Profile</h2>
-  <div class="profile-details">
-    <img src="{% static 'images/user-placeholder.png' %}" alt="User Avatar" class="profile-pic">
+  <h2>My Profile</h2>
+  <div class="profile-details">>
+    <!--  Display Profile Picture (Ensure STATIC & MEDIA settings are correct) -->
+    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
+    <h3>Personal Information</h3>
+    <p><strong>First Name:</strong> {{ user.first_name }}</p>
+    <p><strong>Last Name:</strong> {{ user.last_name }}</p>
     <p><strong>Username:</strong> {{ user.username }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Role:</strong> {{ user.get_role_display }}</p>
-    <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
-    <p><strong>Location:</strong> {{ user.profile.location }}</p>
-    <p><strong>Joined:</strong> {{ user.date_joined }}</p>
-    <a href=" " class="btn-secondary">Edit Profile</a>
+    <p><strong>Phone Number:</strong> {{ user.phone_number|default:"Not provided" }}</p>
+    <p><strong>Location:</strong> {{ user.location|default:"Not provided" }}</p>
+    <p><strong>Bio:</strong> {{ user.bio|default:"No bio added yet." }}</p>
+
+    {% if request.user.is_authenticated and request.user.role == "farmer" %}
+        <h3>Farmer Information</h3>
+        <p><strong>Farm Size:</strong> {{ user.farm_size|default:"Not specified" }}</p>
+        <p><strong>Crops Grown:</strong> {{ user.crops_grown|default:"No crops listed" }}</p>
+    {% endif %}
+
+    {% if request.user.is_authenticated and request.user.role == "buyer" %}
+        <h3>Buyer Information</h3>
+        <p><strong>Preferred Crops:</strong> {{ user.preferred_crops|default:"No crops listed" }}</p>
+    {% endif %}
+    <a href="{% url 'accounts:profile_edit' %} " class="btn-secondary">Edit Profile</a>
     <a href="{% url 'products:dashboard' %}" class="btn-secondary">Back to Dashboard</a>
   </div>
 </div>

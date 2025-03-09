@@ -8,7 +8,7 @@ class Transaction(models.Model):
     Represents a payment transaction.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='transactions')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)  # Track which product was purchased
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, default=0)  # Track which product was purchased
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=10, default='TZS')
     transaction_id = models.CharField(max_length=100, unique=True)

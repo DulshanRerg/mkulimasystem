@@ -17,6 +17,7 @@ class ChatRoom(models.Model):
         null=True,
         blank=True
     )
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     is_group = models.BooleanField(default=False)  # True for group chats
     group_image = models.ImageField(upload_to='group_images/', null=True, blank=True)  # Group chat image
 

@@ -169,7 +169,9 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
-  padding: 20px;
+  padding: 10px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 .product-card {
   background: white;
@@ -328,6 +330,35 @@ form button:hover {
 .stars {
   font-size: 18px;
   color: gold;
+}
+
+/* Container for the profile picture */
+.profile-pic-container {
+  text-align: center;
+}
+
+/* Profile picture styling */
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  padding: 5px;
+}
+
+/* Form styling */
+.profile-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+/* Margin for the back button */
+.mt-3 {
+  margin-top: 1rem;
 }
 
 

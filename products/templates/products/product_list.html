@@ -60,9 +60,14 @@
                           No Ratings Yet
                       {% endif %}
                   </p>
-                  <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">👀 View Details</a>
+                  {% if user.is_buyer %}
+                    <!--  Show Add to Cart Button -->
+                    <a href="#" class="btn-secondary">🛒 Add to Cart</a>
+                    <!-- Show View Details Button -->
+                    <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary">👀 View Details</a>
+                  {% endif %}
                   {% if user.is_farmer %}
-                    <a href="{% url 'products:delete_product' product.pk %}" class="btn-danger">Delete</a>
+                  <a href="{% url 'products:product_detail' product.pk %}" class="btn-secondary"> Modify</a>
                   {% endif %}
               </div>
           </div>
