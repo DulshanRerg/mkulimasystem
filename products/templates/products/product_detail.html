@@ -16,7 +16,7 @@
     <p>Description: {{ product.description }}</p>
     <p>Available Quantity: <strong>{{ product.quantity }}</strong></p>
     <p>Category: <strong>{{ product.category }}</strong></p>
-    <p>Posted by: <strong>{{ product.farmer }}</strong></p>
+    <p>Posted by: <strong><a href="{% url 'accounts:user_profile' product.farmer.username %}" class="btn-secondary">{{ product.farmer }}</a></strong></p>
     <p>Posted on: <strong>{{ product.created_at }}</strong></p>
     <p>Updated on: <strong>{{ product.updated_at }}</strong></p>
     <!-- ✅ Display Average Rating -->

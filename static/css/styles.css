@@ -1,0 +1,59 @@
+/* ✅ Sidebar Styling */
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #f8f9fa;
+    padding: 15px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    border-right: 2px solid #ddd;
+}
+
+.sidebar h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #007bff;
+    display: block;
+    padding: 8px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.main-content {
+    margin-left: 270px; /* ✅ Push main content to the right */
+    padding: 20px;
+    width: 100%;
+}
+
+/* ✅ Ensure chat is close to the sidebar */
+.chat-container {
+    display: flex;
+    margin-left: 260px; /* Push content closer to the sidebar */
+    padding: 20px;
+    width: 80%;
+}

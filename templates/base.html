@@ -2,43 +2,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>{% block title %}Mkulima App{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
-  {% block extra_head %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mkulima App{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-  <header class="header">
-    <div class="logo">
-      <a href="{% url 'landing' %}" class="logo-text">Mkulima App</a>
-    </div>
-    <nav class="nav">
-      <ul>
-        {% if user.is_authenticated %}
-          <li><a href="{% url 'products:dashboard' %}">Dashboard</a></li>
-          <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
-        {% else %}
-          <li><a href="{% url 'accounts:login' %}">Login</a></li>
-          <li><a href="{% url 'accounts:signup' %}">Sign Up</a></li>
-        {% endif %}
-      </ul>
-    </nav>
-  </header>
+    <header class="header">
+        <div class="logo">
+            <a href="{% url 'landing' %}" class="logo-text">Mkulima App</a>
+        </div>
+        <nav class="nav">
+            
+        </nav>
+    </header>
+  <div class="container">
+    {% if user.is_authenticated %}
+      <!-- ✅ Sidebar -->
+      <div class="sidebar">
+            <h3>Navigation</h3>
+            <div class="user-profile">
+              <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
+              <h3>{{ user.username }}</h3>
+              <p>{{ user.role }}</p>
+            </div>
+            <ul>
+                
+                {% if user.role == 'farmer' %}
+                <li><a href="{% url 'products:create_product' %}">🌾 Post a Crop</a></li>
+                <li><a href="{% url 'products:product_list' %}">🏠 Dashboard</a></li>
+                {% endif %}
+                {% if user.role == 'buyer' %}
+                <li><a href="{% url 'products:product_list' %}">🏠 Dashboard</a></li>
+                {% endif %}
+                <li><a href="{% url 'subscriptions:status' %}">🔔 Subscription</a></li>
+                <li><a href="{% url 'chat:chat_room_list' %}">💬 Chats</a></li>
+                <li><a href="{% url 'accounts:profile' %}">👤 Profile</a></li>
+                <li><a href="{% url 'accounts:logout' %}">🚪 Logout</a></li>
+            </ul>
+        </div>
+    {% endif %}
+    <div class="main-content">
 
-  <main class="main-content">
-    {% block content %}{% endblock %}
-  </main>
-
-  <!-- Hide the footer only on chat pages -->
-  {% if "/chat/" not in request.path %}
-  <footer class="footer">
-      <div class="container">
-          <p>&copy; 2025 Mkulima App - All Rights Reserved</p>
+        <!-- ✅ Main Content -->
+            {% block content %}{% endblock %}
       </div>
+    </div>
+  <footer class="footer">
+          <p>&copy; 2025 Mkulima App - All Rights Reserved</p>
   </footer>
-  {% endif %}
+    <script src="{% static 'js/main.js' %}"></script>
 
-  {% block scripts %}{% endblock %}
 </body>
 </html>

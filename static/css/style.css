@@ -361,6 +361,24 @@ form button:hover {
   margin-top: 1rem;
 }
 
+/* Center content for the landing page */
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    text-align: center;
+}
+
+/* Additional styles for the landing page content */
+.landing-content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 
 /* ✅ Mobile-friendly adjustments */
 @media screen and (max-width: 768px){

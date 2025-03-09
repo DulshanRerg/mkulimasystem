@@ -17,12 +17,10 @@ class User(AbstractUser):
     """
     FARMER = 'farmer'
     BUYER = 'buyer'
-    ADMIN = 'admin'
 
     ROLE_CHOICES = [
         (FARMER, 'Farmer'),
         (BUYER, 'Buyer'),
-        (ADMIN, 'Admin'),
     ]
 
     username = models.CharField(

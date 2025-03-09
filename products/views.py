@@ -9,45 +9,51 @@ def product_list(request):
     """
     Displays all products with advanced search and filtering.
     """
-    query = request.GET.get('q', '')
-    min_price = request.GET.get('min_price', '')
-    max_price = request.GET.get('max_price', '')
-    location = request.GET.get('location', '')
-    category = request.GET.get('category', '')
-    sort_by = request.GET.get('sort_by', '')
     products = Product.objects.all().annotate(average_rating=Avg('reviews__rating'))
-    # Search by crop name
-    if query:
-        products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
-    # Filter by price range
+    #  Farmers should see only their own products
+    if request.user.role == 'farmer':
+        products = products.filter(farmer=request.user)
+
+    #  Apply Search Filter
+    query = request.GET.get('q')
+    if query:
+        products = products.filter(name__icontains=query)  # Search by product name
+
+    # ✅ Apply Price Filter
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
     if min_price:
         products = products.filter(price__gte=min_price)
     if max_price:
         products = products.filter(price__lte=max_price)
 
-    # Filter by location
+    # ✅ Apply Location Filter
+    location = request.GET.get('location')
     if location:
         products = products.filter(location__icontains=location)
 
-    # Filter by category
+    # ✅ Apply Category Filter
+    category = request.GET.get('category')
     if category:
         products = products.filter(category__icontains=category)
 
-    # Sorting options
-    if sort_by == 'newest':
-        products = products.order_by('-created_at')
-    elif sort_by == 'lowest_price':
-        products = products.order_by('price')
-    elif sort_by == 'highest_price':
-        products = products.order_by('-price')
+    # ✅ Sorting
+    sort_by = request.GET.get('sort_by')
+    if sort_by == "lowest_price":
+        products = products.order_by('price')  # Ascending order
+    elif sort_by == "highest_price":
+        products = products.order_by('-price')  # Descending order
+
     return render(request, 'products/product_list.html', {'products': products})
 
 def product_detail(request, pk):
     """
-    Shows details for a single product.
+    Shows details for a single product. 
+    Allows buyers to rate and review products.
     """
     product = get_object_or_404(Product, pk=pk)
+    username = product.farmer
     reviews = product.reviews.all()
     average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
     # Check if buyer has already rated the farmer
@@ -67,6 +73,7 @@ def product_detail(request, pk):
     return render(request, 'products/product_detail.html', {
         # Pass to template
         'product': product,
+        'username': username,
         'reviews': reviews,
         'average_rating': round(average_rating, 1),
         'form': form,
@@ -115,12 +122,3 @@ def delete_product(request,pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
     return redirect('products:product_list')
-
-@login_required
-def dashboard(request):
-    if request.user.is_admin():
-        return render(request, "dashboard/admin_dashboard.html")
-    elif request.user.is_farmer():
-        return render(request, "dashboard/farmer_dashboard.html")
-    else:
-        return render(request, "dashboard/buyer_dashboard.html")

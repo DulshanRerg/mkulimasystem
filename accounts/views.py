@@ -3,9 +3,11 @@ from django.views import generic
 from django.contrib.auth import login, logout
 from django.shortcuts import redirect, render
 from .forms import CustomUserCreationForm, CustomUserUpdateForm
+from .models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
 
 class SignUpView(generic.CreateView):
     """
@@ -61,3 +63,8 @@ def profile_view(request):
         form = CustomUserUpdateForm(instance=user, user_role=user_role)
 
     return render(request, 'accounts/profile_update.html', {'form': form, 'user': user, 'user_role': user_role})
+
+# Allow users to see each other
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, 'accounts/user_profile.html', {'user': user})

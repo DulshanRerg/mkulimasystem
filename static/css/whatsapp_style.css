@@ -26,14 +26,6 @@
   font-size: 1.5rem;
 }
 
-.new-chat {
-  background-color: #25d366;
-  color: #fff;
-  padding: 0.5rem 0.8rem;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
 .chat-list {
   list-style: none;
   margin: 0;
