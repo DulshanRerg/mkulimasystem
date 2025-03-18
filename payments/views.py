@@ -4,7 +4,7 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from products.models import Product, Review
 from .forms import PaymentForm
-from .services import AzamPayService
+from .services import PaymentGatewayService
 from .models import Transaction
 import uuid
 
@@ -25,7 +25,7 @@ class PaymentInitiateView(View):
             external_id = str(uuid.uuid4())
             callback_url = request.build_absolute_uri(reverse('payments:callback'))
 
-            azampay = AzamPayService()
+            azampay = PaymentGatewayService()
             payment_response = azampay.initiate_payment(amount, currency, external_id, payer_email, callback_url)
 
             Transaction.objects.create(
@@ -83,7 +83,7 @@ def process_payment(request, pk):
         callback_url = request.build_absolute_uri(reverse('payments:callback'))
 
         #  Initiate payment via AzamPay
-        azampay = AzamPayService()
+        azampay = PaymentGatewayService()
         payment_response = azampay.initiate_payment(amount, currency, external_id, payer_email, callback_url)
 
         #  Store transaction details in the database

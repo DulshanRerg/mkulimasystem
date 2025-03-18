@@ -1,13 +1,147 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Make a Payment{% endblock %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="form-container">
-  <h1>Payment</h1>
-  <div class="btn-danger" role="alert">
-    This page is currently under maintenance. Please check back later.
-  </div>
-</div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initiate Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .provider-card {
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+        .provider-card input:checked + img {
+            border-color: #3b82f6;
+        }
+        .provider-card input:checked + span {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded shadow-md w-full max-w-lg">
+            <h1 class="text-2xl font-bold mb-6 text-center">Send Money</h1>
+            <form id="paymentForm" action="{% url 'payments:initiate' %}" method="POST">
+                {% csrf_token %}<!-- Ensure CSRF token is included -->
+                <div class="mb-4">
+                    <label for="provider" class="block text-gray-700 text-center">Select Your Network</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        {% for provider in providers %}
+                            <label class="provider-card border border-gray-300 rounded p-4 flex flex-col items-center cursor-pointer">
+                                <input type="radio" name="provider" value="{{ provider.id }}" class="hidden" required>
+                                <img src="{{ provider.logo }}" alt="{{ provider.name }}" class="w-12 h-12 rounded-full border border-gray-300 mb-2">
+                                <span>{{ provider.name }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="senderNumber" class="block text-gray-700">Your Phone Number</label>
+                    <input type="text" name="senderNumber" id="senderNumber" class="mt-1 block w-full border-gray-300 rounded-md" placeholder="e.g. 255123456789" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="receiverNumber" class="block text-gray-700">Receiver's Phone Number</label>
+                    <input type="text" name="receiverNumber" id="receiverNumber" class="mt-1 block w-full border-gray-300 rounded-md" placeholder="e.g. 255987654321" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="amount" class="block text-gray-700">Amount</label>
+                    <input type="text" name="amount" id="amount" class="mt-1 block w-full border-gray-300 rounded-md" placeholder="e.g. 1000" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="currency" class="block text-gray-700">Currency</label>
+                    <input type="text" name="currency" id="currency" class="mt-1 block w-full border-gray-300 rounded-md" value="TZS" readonly>
+                </div>
+
+                <div class="mb-4">
+                    <label for="externalId" class="block text-gray-700">Transaction ID</label>
+                    <input type="text" name="externalId" id="externalId" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ externalId }}" readonly>
+                </div>
+
+                {% comment %} <div class="mb-4">
+                    <label for="additionalProperties" class="block text-gray-700">Additional Properties (JSON)</label>
+                    <textarea name="additionalProperties" id="additionalProperties" rows="3" class="mt-1 block w-full border-gray-300 rounded-md" placeholder='{"key": "value"}'></textarea>
+                </div> {% endcomment %}
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Initiate Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.provider-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.querySelector('input[type="radio"]').checked = true;
+                document.querySelectorAll('.provider-card').forEach(c => c.classList.remove('border-blue-600', 'bg-blue-50'));
+                card.classList.add('border-blue-600', 'bg-blue-50');
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent immediate form submission
+
+            Swal.fire({
+                title: "Processing Payment",
+                text: "Please wait...",
+                icon: "info",
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.close();
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: "Payment Successful",
+                        text: data.message,
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    }).then(() => {
+                        window.location.href = "{{'payment.result'}}";
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Payment Failed",
+                        text: data.message,
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                Swal.fire({
+                    title: "Error",
+                    text: "An error occurred while processing the payment.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            });
+        });
+    </script>
+</body>
+</html>
 {% endblock %}

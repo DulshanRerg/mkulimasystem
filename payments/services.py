@@ -1,35 +1,31 @@
 import requests
 from django.conf import settings
 
-class AzamPayService:
+class PaymentGatewayService:
     """
-    Handles integration with the AzamPay API.
+    Handles API requests to your Python Payment Gateway.
     """
-    def __init__(self):
-        self.base_url = settings.AZAMPAY_BASE_URL
-        self.client_id = settings.AZAMPAY_CLIENT_ID
-        self.client_secret = settings.AZAMPAY_CLIENT_SECRET
+    BASE_URL = settings.PYTHON_GATEWAY_URL  # ✅ Your API Base URL
 
-    def get_access_token(self):
-        response = requests.post(f'{self.base_url}/auth/token', data={
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-        })
-        data = response.json()
-        return data.get('access_token')
-
-    def initiate_payment(self, amount, currency, external_id, payer_email, callback_url):
-        access_token = self.get_access_token()
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {access_token}'
-        }
+    @staticmethod
+    def send_payment(account_number, amount, currency, external_id, provider, additional_properties=None):
+        """
+        Sends a payment request to your python-payment-gateway API.
+        """
         payload = {
-            'amount': amount,
-            'currency': currency,
-            'externalId': external_id,
-            'payerEmail': payer_email,
-            'callbackUrl': callback_url,
+            "accountNumber": account_number,
+            "amount": str(amount),
+            "currency": currency,
+            "externalId": external_id,
+            "provider": provider,
+            "additionalProperties": additional_properties or None,
         }
-        response = requests.post(f'{self.base_url}/payment/initiate', json=payload, headers=headers)
-        return response.json()
+
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # ✅ Send request to your API (no authentication needed)
+        response = requests.post(f"{PaymentGatewayService.BASE_URL}/mno-checkout", json=payload, headers=headers)
+
+        return response.json()  # ✅ Return the response from your API

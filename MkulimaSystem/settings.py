@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'payments',
     'subscriptions',
     'channels',
+    'orders'
 ]
 
 MIDDLEWARE = [
@@ -153,11 +154,8 @@ LOGOUT_REDIRECT_URL = 'accounts:login'
 AUTH_USER_MODEL = 'accounts.User'
 
 # AzamPay settings
-AZAMPAY_APP_NAME=os.getenv('AZAMPAY_APP_NAME')
-AZAMPAY_AUTH_URL=os.getenv('AZAMPAY_AUTH_URL')
-AZAMPAY_BASE_URL=os.getenv('AZAMPAY_BASE_URL')
-AZAMPAY_CLIENT_ID=os.getenv('AZAMPAY_CLIENT_ID')
-AZAMPAY_CLIENT_SECRET=os.getenv('AZAMPAY_CLIENT_SECRET')
+PYTHON_GATEWAY_URL = os.getenv('PYTHON_GATEWAY_URL')
+PAYMENT_API_TOKEN = os.getenv('PAYMENT_API_TOKEN')
 
 # Channels settings
 ASGI_APPLICATION = 'MkulimaSystem.asgi.application'
